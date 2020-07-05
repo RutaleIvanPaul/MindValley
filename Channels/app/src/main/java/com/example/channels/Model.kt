@@ -25,17 +25,17 @@ object ChannelsModel{
     data class Channel(
         val coverAsset: CoverAsset,
         val iconAsset: IconAsset,
-        val id: String,
+        val id: String?,
         val latestMedia: List<LatestMedia>,
-        val mediaCount: Int,
+        val mediaCount: Int?,
         val series: List<Sery>,
-        val slug: String,
-        val title: String
+        val slug: String?,
+        val title: String?
     )
-    data class CoverAsset(val url: String)
+    data class CoverAsset(val url: String?)
     data class IconAsset(
-        val thumbnailUrl: String,
-        val url: String
+        val thumbnailUrl: String?,
+        val url: String?
     )
     data class LatestMedia(
         val coverAsset: CoverAssetX,
