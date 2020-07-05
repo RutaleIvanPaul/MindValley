@@ -2,6 +2,7 @@ package com.example.channels
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.channels.database.DatabaseAccessHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -15,14 +16,20 @@ class MainActivity : AppCompatActivity() {
         ApiService.create()
     }
 
+    val databaseAccessHelper = DatabaseAccessHelper()
+
     private fun beginSearch() {
         disposable = wikiApiServe.returnCategories()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { result -> txt_search_result.text = "${result.toString()} result found" },
+                { result -> txt_search_result.text = "${result.data.categories.toString()} result found" },
                 { error -> txt_search_result.text = "${error.message}"}
             )
+    }
+
+    private fun returnCategoriesToScreen(){
+        txt_search_result.text = databaseAccessHelper.fetchChannels(applicationContext).toString()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +37,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btn_search.setOnClickListener {
-            beginSearch()
+            returnCategoriesToScreen()
         }
+        databaseAccessHelper.clearChannels(applicationContext)
+        databaseAccessHelper.populateChannels(applicationContext)
     }
 
     override fun onPause() {
