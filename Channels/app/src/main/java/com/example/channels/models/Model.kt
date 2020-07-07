@@ -1,4 +1,4 @@
-package com.example.channels
+package com.example.channels.models
 
 object CategoriesModel{
     data class Categories(val data: Data)

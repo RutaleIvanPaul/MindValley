@@ -1,8 +1,14 @@
-package com.example.channels
+package com.example.channels.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.channels.database.DatabaseAccessHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.channels.R
+import com.example.channels.adapters.CategoriesAdapter
+import com.example.channels.adapters.ChannelsAdapter
+import com.example.channels.adapters.NewEpisodesAdapter
+import com.example.channels.services.DatabaseAccessHelper
+import com.example.channels.services.ApiService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -16,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         ApiService.create()
     }
 
-    val databaseAccessHelper = DatabaseAccessHelper()
+    val databaseAccessHelper =
+        DatabaseAccessHelper()
 
     private fun beginSearch() {
         disposable = wikiApiServe.returnCategories()
@@ -28,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             )
     }
 
-    private fun returnCategoriesToScreen(){
+    private fun returnToScreen(){
         txt_search_result.text = databaseAccessHelper.fetchChannels(applicationContext).toString()
     }
 
@@ -37,10 +44,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btn_search.setOnClickListener {
-            returnCategoriesToScreen()
+            returnToScreen()
         }
-        databaseAccessHelper.clearChannels(applicationContext)
-        databaseAccessHelper.populateChannels(applicationContext)
+//        databaseAccessHelper.populateCategories(applicationContext)
+//        databaseAccessHelper.populateNewEpisodes(applicationContext)
+
+        recyclerviewChannels.layoutManager = LinearLayoutManager(this)
+        recyclerviewCategories.layoutManager = LinearLayoutManager(this)
+        recyclerviewNewEpisodes.layoutManager = LinearLayoutManager(this)
+//        recyclerview.adapter = ChannelsAdapter(this)
+
+        databaseAccessHelper.populateAll(applicationContext,
+            recyclerviewCategories,recyclerviewChannels,recyclerviewNewEpisodes)
+
     }
 
     override fun onPause() {

@@ -1,5 +1,8 @@
-package com.example.channels
+package com.example.channels.services
 
+import com.example.channels.models.CategoriesModel
+import com.example.channels.models.ChannelsModel
+import com.example.channels.models.NewEpisodeModel
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory

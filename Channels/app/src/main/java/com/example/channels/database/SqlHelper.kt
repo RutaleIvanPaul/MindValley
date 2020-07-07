@@ -39,7 +39,8 @@ class SqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "channels") {
             "channel_id" to TEXT,
             "mediaCount" to INTEGER,
             "slug" to TEXT,
-            "title" to TEXT
+            "title" to TEXT,
+            "seriesornot" to TEXT
         )
 
         db.createTable("latest_media",true,
@@ -85,9 +86,17 @@ fun saveNewEpisode(context: Context,channel:String,coverAsset:String,title: Stri
     return row_id
 }
 
-fun saveChannel(context: Context,coverAsset_url: String,iconAsset_thumbnail_url:String,
-                iconAsset_url:String,channel_id:String,mediaCount:Int, slug:String,
-                title: String ):Long{
+fun saveChannel(
+    context: Context,
+    coverAsset_url: String,
+    iconAsset_thumbnail_url: String,
+    iconAsset_url: String,
+    channel_id: String,
+    mediaCount: Int,
+    slug: String,
+    title: String,
+    seriesornot: String
+):Long{
 
     val row_id = context.database.use {
         insert("channel",
@@ -97,7 +106,8 @@ fun saveChannel(context: Context,coverAsset_url: String,iconAsset_thumbnail_url:
             "channel_id" to channel_id,
             "mediaCount" to mediaCount,
             "slug" to slug,
-            "title" to title)
+            "title" to title,
+            "seriesornot" to seriesornot)
     }
     return row_id
 }

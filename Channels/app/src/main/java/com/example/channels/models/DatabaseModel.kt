@@ -1,4 +1,4 @@
-package com.example.channels.database
+package com.example.channels.models
 
 data class DatabaseCategory(val id: Long,val name: String)
 
@@ -9,5 +9,5 @@ data class DatabaseNewEpisode(
 data class DatabaseChannel(
     val id: Long, val coverAsset_url: String,val iconAsset_thumbnail_url:String,
     val iconAsset_url:String,val channel_id:String,val mediaCount:Long, val slug:String,
-    val title: String
+    val title: String, val seriesOrNot: String
 )
