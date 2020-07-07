@@ -25,34 +25,20 @@ class MainActivity : AppCompatActivity() {
     val databaseAccessHelper =
         DatabaseAccessHelper()
 
-    private fun beginSearch() {
-        disposable = wikiApiServe.returnCategories()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { result -> txt_search_result.text = "${result.data.categories.toString()} result found" },
-                { error -> txt_search_result.text = "${error.message}"}
-            )
-    }
-
-    private fun returnToScreen(){
-        txt_search_result.text = databaseAccessHelper.fetchChannels(applicationContext).toString()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btn_search.setOnClickListener {
-            returnToScreen()
-        }
-//        databaseAccessHelper.populateCategories(applicationContext)
-//        databaseAccessHelper.populateNewEpisodes(applicationContext)
+        recyclerviewChannels.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        recyclerviewCategories.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        recyclerviewNewEpisodes.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
 
-        recyclerviewChannels.layoutManager = LinearLayoutManager(this)
-        recyclerviewCategories.layoutManager = LinearLayoutManager(this)
-        recyclerviewNewEpisodes.layoutManager = LinearLayoutManager(this)
-//        recyclerview.adapter = ChannelsAdapter(this)
+        itemsswipetorefresh.setOnRefreshListener {
+            itemsswipetorefresh.isRefreshing = true
+            databaseAccessHelper.populateAll(applicationContext,
+                recyclerviewCategories,recyclerviewChannels,recyclerviewNewEpisodes)
+            itemsswipetorefresh.isRefreshing = false
+        }
 
         databaseAccessHelper.populateAll(applicationContext,
             recyclerviewCategories,recyclerviewChannels,recyclerviewNewEpisodes)
