@@ -4,14 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.channels.R
-import com.example.channels.adapters.CategoriesAdapter
-import com.example.channels.adapters.ChannelsAdapter
-import com.example.channels.adapters.NewEpisodesAdapter
-import com.example.channels.services.DatabaseAccessHelper
+import com.example.channels.services.RequestsManager
 import com.example.channels.services.ApiService
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     val databaseAccessHelper =
-        DatabaseAccessHelper()
+        RequestsManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

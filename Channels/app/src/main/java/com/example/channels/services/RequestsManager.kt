@@ -19,7 +19,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.db.classParser
 
-class DatabaseAccessHelper {
+class RequestsManager {
     private var disposable: Disposable? = null
 
     private val wikiApiServe by lazy {
