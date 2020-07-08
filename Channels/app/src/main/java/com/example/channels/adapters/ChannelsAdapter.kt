@@ -54,12 +54,6 @@ class ChannelsAdapter(var channelsFromApi: List<ChannelsModel.Channel> = listOf(
             }
         }
     }
-
-    fun update(){
-        context.runOnUiThread {
-            notifyDataSetChanged()
-        }
-    }
 }
 
 class ChannelsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
