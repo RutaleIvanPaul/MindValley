@@ -38,15 +38,15 @@ class CategoriesAdapter (
 
     override fun onBindViewHolder(holderCategories: CategoriesViewHolder, position: Int) {
         if (categoriesFromApi.isEmpty()){
-            holderCategories.textView.text = categoriesFromDB[position].name
+            holderCategories.category_button.text = categoriesFromDB[position].name
         }
         else {
-            holderCategories.textView.text = categoriesFromApi[position].name
+            holderCategories.category_button.text = categoriesFromApi[position].name
         }
     }
 }
 
 class CategoriesViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-    val textView = view.list_item
+    val category_button = view.category_button
 }
 
