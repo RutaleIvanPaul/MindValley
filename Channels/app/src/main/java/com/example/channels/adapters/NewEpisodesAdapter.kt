@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.channels.R
 import com.example.channels.models.DatabaseNewEpisode
 import com.example.channels.models.NewEpisodeModel
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.newepisodes_layout.view.*
 
 class NewEpisodesAdapter(
@@ -37,16 +38,26 @@ class NewEpisodesAdapter(
 
     override fun onBindViewHolder(holderNewEpisodes: NewEpisodesViewHolder, position: Int) {
         if (newEpisodesFromApi.isEmpty()){
-            holderNewEpisodes.textView.text = newEpisodesFromDB[position].title
+            holderNewEpisodes.textView_title.text = newEpisodesFromDB[position].title
+            holderNewEpisodes.textView_channel.text = newEpisodesFromDB[position].channel
+            Picasso.with(holderNewEpisodes.itemView.context).
+            load( newEpisodesFromDB[position].coverAsset).
+            into(holderNewEpisodes.imageView)
         }
         else {
-            holderNewEpisodes.textView.text = newEpisodesFromApi[position].title
+            holderNewEpisodes.textView_title.text = newEpisodesFromApi[position].title
+            holderNewEpisodes.textView_channel.text = newEpisodesFromApi[position].channel.title
+            Picasso.with(holderNewEpisodes.itemView.context).
+            load( newEpisodesFromApi[position].coverAsset.url).
+            into(holderNewEpisodes.imageView)
         }
     }
 
 }
 
 class NewEpisodesViewHolder (view: View) : RecyclerView.ViewHolder(view){
-    val textView = view.newepisode_textview
+    val textView_title = view.newepisode_textview_title
+    val textView_channel = view.new_episode_textView_channel
+    val imageView = view.newepisode_imageView
 }
 

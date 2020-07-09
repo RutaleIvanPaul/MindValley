@@ -1,10 +1,12 @@
 package com.example.channels.services
 
 import android.content.Context
+import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.channels.adapters.CategoriesAdapter
 import com.example.channels.adapters.ChannelsAdapter
@@ -17,6 +19,8 @@ import com.example.channels.models.DatabaseNewEpisode
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.newepisodes_layout.*
 import org.jetbrains.anko.db.classParser
 
 class RequestsManager {
@@ -25,6 +29,11 @@ class RequestsManager {
     private val wikiApiServe by lazy {
         ApiService.create()
     }
+
+//    val roboto = Typeface.createFromAsset(
+//        applicationContext.assets,
+//        "font/Roboto-Bold.ttf"
+//    )
 
     private fun checkNetwork(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -47,6 +56,7 @@ class RequestsManager {
         recyclerViewNewEpisode: RecyclerView){
 
         val isConnected: Boolean = checkNetwork(context)
+
         if (isConnected){
             populateCategoriesFromApi(recyclerViewCategories,context)
             populateChannelsFromApi(recyclerViewChannel, context)
@@ -57,6 +67,8 @@ class RequestsManager {
             populateChannelsFromDatabase(recyclerViewChannel,context)
             populateNewEpisodesFromDatabase(recyclerViewNewEpisode,context)
         }
+
+//        setFontFaces(context)
 
     }
 
@@ -110,7 +122,7 @@ class RequestsManager {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
-                    val episodes = result.data.media
+                    val episodes = result.data.media.subList(0,6)
                     recyclerView.adapter = NewEpisodesAdapter(
                         newEpisodesFromApi = episodes, context = context
                     )
@@ -140,7 +152,7 @@ class RequestsManager {
     }
 
     fun fetchNewEpisodes(context: Context):List<DatabaseNewEpisode>{
-        return returnNewEpisode(context).parseList(classParser<DatabaseNewEpisode>())
+        return returnNewEpisode(context).parseList(classParser<DatabaseNewEpisode>()).subList(0,5)
     }
 
     fun clearNewEpisodes(context: Context){
@@ -169,7 +181,7 @@ class RequestsManager {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
-                    val channels: List<ChannelsModel.Channel> = result.data.channels
+                    val channels: List<ChannelsModel.Channel> = result.data.channels.subList(0,6)
                     recyclerView.adapter = ChannelsAdapter(channelsFromApi = channels,
                         context = context)
                     clearChannels(context)
@@ -198,5 +210,19 @@ class RequestsManager {
     fun clearChannels(context: Context){
         clearChannel(context)
     }
+
+//    private fun setFontFaces(context: Context) {
+//        val roboto = Typeface.createFromAsset(
+//            context.assets,
+//            "font/Roboto-Bold.ttf"
+//        )
+//        channel_header_textView.setTypeface(roboto)
+//        browseCategoriesTextview.setTypeface(roboto)
+//        newepisode_textview_header.setTypeface(roboto)
+//        newepisode_textview_title.setTypeface(roboto)
+//        new_episode_textView_channel.setTypeface(roboto)
+//        channel_header_textView.setTypeface(roboto)
+//        browseCategoriesTextview.setTypeface(roboto)
+//    }
 
 }

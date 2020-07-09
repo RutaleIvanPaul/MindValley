@@ -51,5 +51,18 @@ dependencies {
     //Anko
     implementation 'org.jetbrains.anko:anko-sqlite:0.10.8'
 
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    //Custom ImageView
+    implementation 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
+
+    //Test Rule
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+
+    //UIAutomator
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+
+
 
 }
