@@ -11,3 +11,8 @@ data class DatabaseChannel(
     val iconAsset_url:String,val channel_id:String,val mediaCount:Long, val slug:String,
     val title: String, val seriesOrNot: String
 )
+
+data class DatabaseMedia(
+    val id: Long, val channel_name: String, val coverAsset: String, val title: String,
+    val type: String
+)

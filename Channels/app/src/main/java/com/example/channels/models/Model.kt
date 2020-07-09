@@ -48,7 +48,7 @@ object ChannelsModel{
         val title: String
     )
     data class CoverAssetX(
-        val url: String
+        val url: String?
     )
     data class CoverAssetXX(
         val url: String

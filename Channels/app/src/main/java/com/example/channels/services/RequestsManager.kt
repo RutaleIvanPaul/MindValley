@@ -7,19 +7,20 @@ import android.net.NetworkInfo
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.channels.adapters.CategoriesAdapter
 import com.example.channels.adapters.ChannelsAdapter
+import com.example.channels.adapters.CoursesAdapter
 import com.example.channels.adapters.NewEpisodesAdapter
 import com.example.channels.database.*
-import com.example.channels.models.ChannelsModel
-import com.example.channels.models.DatabaseCategory
-import com.example.channels.models.DatabaseChannel
-import com.example.channels.models.DatabaseNewEpisode
+import com.example.channels.models.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.channel_title_recyclerview.*
 import kotlinx.android.synthetic.main.newepisodes_layout.*
 import org.jetbrains.anko.db.classParser
 
@@ -52,23 +53,25 @@ class RequestsManager {
     fun populateAll(
         context: Context,
         recyclerViewCategories: RecyclerView,
-        recyclerViewChannel: RecyclerView,
-        recyclerViewNewEpisode: RecyclerView){
+        recyclerViewNewEpisode: RecyclerView,
+        channel_title_recyclerview: RecyclerView
+    ){
 
         val isConnected: Boolean = checkNetwork(context)
 
         if (isConnected){
             populateCategoriesFromApi(recyclerViewCategories,context)
-            populateChannelsFromApi(recyclerViewChannel, context)
+            populateChannelsFromApi(context,
+                channel_title_recyclerview
+            )
             populateNewEpisodesFromApi(recyclerViewNewEpisode,context)
         }
         else{
             populateCategoriesFromDatabase(recyclerViewCategories,context)
-            populateChannelsFromDatabase(recyclerViewChannel,context)
+            populateChannelsFromDatabase(context, channel_title_recyclerview)
             populateNewEpisodesFromDatabase(recyclerViewNewEpisode,context)
         }
 
-//        setFontFaces(context)
 
     }
 
@@ -152,7 +155,7 @@ class RequestsManager {
     }
 
     fun fetchNewEpisodes(context: Context):List<DatabaseNewEpisode>{
-        return returnNewEpisode(context).parseList(classParser<DatabaseNewEpisode>()).subList(0,5)
+        return returnNewEpisode(context).parseList(classParser<DatabaseNewEpisode>()).subList(0,6)
     }
 
     fun clearNewEpisodes(context: Context){
@@ -160,10 +163,11 @@ class RequestsManager {
     }
 
     private fun populateChannelsFromDatabase(
-        recyclerView: RecyclerView,
-        context: Context) {
+        context: Context,
+        channel_title_recyclerview: RecyclerView
+    ) {
         try {
-            recyclerView.adapter = ChannelsAdapter(
+            channel_title_recyclerview.adapter = ChannelsAdapter(
                 channelsFromDB = fetchChannels(context), context = context)
         }
         catch (e: Exception){
@@ -173,42 +177,77 @@ class RequestsManager {
     }
 
     private fun populateChannelsFromApi(
-        recyclerView: RecyclerView,
-        context: Context
+        context: Context,
+        channel_title_recyclerview: RecyclerView
     ) {
         disposable = wikiApiServe.returnChannels()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
-                    val channels: List<ChannelsModel.Channel> = result.data.channels.subList(0,6)
-                    recyclerView.adapter = ChannelsAdapter(channelsFromApi = channels,
-                        context = context)
+                    val channels: List<ChannelsModel.Channel> = result.data.channels
+                    channel_title_recyclerview.adapter = ChannelsAdapter(
+                        channelsFromApi = channels, context = context
+                    )
+
+//                    for (channel in channels){
+//                        val recyclerView = RecyclerView(context)
+//                        recyclerView.layoutManager = LinearLayoutManager(context,
+//                            LinearLayoutManager.HORIZONTAL,false)
+//                        recyclerView.adapter = CoursesAdapter(latestCourseMediaFromApi = channel.latestMedia,context = context)
+//                        channels_layout.addView(recyclerView)
+//                    }
                     clearChannels(context)
-                    for (item in 0..5) {
+                    clearLatestMedias(context)
+                    for (channel in channels) {
                         saveChannel(
                             context,
-                            channels[item].coverAsset.url ?: " ",
-                            channels[item].iconAsset.thumbnailUrl ?: " ",
-                            channels[item].iconAsset.url ?: " ",
-                            channels[item].id ?: " ",
-                            channels[item].mediaCount ?: 0,
-                            channels[item].slug ?: " ",
-                            channels[item].title ?: " ",
-                            channels[item].series.isNotEmpty().toString()
+                            channel.coverAsset.url ?: " ",
+                            channel.iconAsset.thumbnailUrl ?: " ",
+                            channel.iconAsset.url ?: " ",
+                            channel.id ?: " ",
+                            channel.mediaCount ?: 0,
+                            channel.slug ?: " ",
+                            channel.title ?: " ",
+                            channel.series.isNotEmpty().toString()
                         )
+
+                        for (latestmedia in channel.latestMedia){
+                            saveLatestMedia(
+                                context,
+                                channel.title ?: " ",
+                                latestmedia.coverAsset.url ?: " ",
+                                latestmedia.title,
+                                latestmedia.type
+                            )
+                        }
                     }
+
                 },
                 { error -> Log.d("API ERROR", "API Fetch Error: ${error.message} ") }
             )
     }
 
     fun fetchChannels(context: Context):List<DatabaseChannel>{
-        return returnChannel(context).parseList(classParser<DatabaseChannel>()).subList(0,5)
+        return returnChannel(context).parseList(classParser<DatabaseChannel>()).subList(0,6)
+    }
+
+    fun fetchMedia(context: Context, channel_name: String): List<DatabaseMedia>{
+        val returnedMedia = returnMedia(context,channel_name).parseList(classParser<DatabaseMedia>())
+        if (returnedMedia.size > 6){
+            return returnedMedia.subList(0,6)
+        }
+        else{
+           return returnedMedia
+        }
     }
 
     fun clearChannels(context: Context){
         clearChannel(context)
+    }
+
+    fun clearLatestMedias(context: Context){
+        clearLatestMedia(context)
     }
 
 //    private fun setFontFaces(context: Context) {
