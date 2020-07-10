@@ -4,25 +4,27 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.channels.R
 import com.example.channels.models.ChannelsModel
 import com.example.channels.models.DatabaseChannel
+import com.example.channels.services.RequestsManager
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.channels_item_layout.view.*
+import kotlinx.android.synthetic.main.channel_title_recyclerview.view.*
 
 class ChannelsAdapter(var channelsFromApi: List<ChannelsModel.Channel> = listOf(),
                       var channelsFromDB: List<DatabaseChannel> = listOf(),
-                      val context: Context):
-    RecyclerView.Adapter<ChannelsViewHolder>()  {
+                      val context: Context
+):
+    RecyclerView.Adapter<ChannelsViewHolder>() {
 
-//    var channels: List<ChannelsModel.Channel> = listOf(ChannelsModel.Channel(""))
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChannelsViewHolder {
         return ChannelsViewHolder(
             LayoutInflater.from(
                 context
             ).inflate(
-                R.layout.channels_item_layout,
+                R.layout.channel_title_recyclerview,
                 parent,
                 false
             )
@@ -38,39 +40,72 @@ class ChannelsAdapter(var channelsFromApi: List<ChannelsModel.Channel> = listOf(
     }
 
     override fun onBindViewHolder(holderChannels: ChannelsViewHolder, position: Int) {
+        holderChannels.recycler_in_recycler.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
         if (channelsFromApi.isEmpty()){
-            if (channelsFromDB[position].seriesOrNot.equals("true")){
-//                holderChannels.layout.minWidth
-                holderChannels.textView.text = channelsFromDB[position].title + " SERIES "
-                Picasso.with(holderChannels.itemView.context).
+            holderChannels.textView_channel_header.text = channelsFromDB[position].title
+            holderChannels.textView_channel_header.text = channelsFromDB[position].mediaCount.toString() + " episodes"
+            Picasso.with(holderChannels.itemView.context).
                 load( channelsFromDB[position].coverAsset_url).
+                into(holderChannels.imageView)
+            if (channelsFromDB[position].seriesOrNot.equals("true")){
+                holderChannels.recycler_in_recycler.adapter = SeriesAdapter(
+                    latestSeriesMediaFromDB =RequestsManager().fetchMedia(context,channelsFromDB[position].title),
+                    context = context
+                )
+            }
+            else{
+                holderChannels.recycler_in_recycler.adapter = CoursesAdapter(
+                    latestCourseMediaFromDB = RequestsManager().fetchMedia(context,channelsFromDB[position].title),
+                    context = context
+                )
+            }
+
+        }
+        else {
+            holderChannels.textView_channel_header.text = channelsFromApi[position].title
+            holderChannels.textView_channel_subheader.text =
+                    channelsFromApi[position].mediaCount.toString() + " episodes"
+            if (channelsFromApi[position].iconAsset != null){
+                Picasso.with(holderChannels.itemView.context).
+                load( channelsFromApi[position].iconAsset.thumbnailUrl).
                 into(holderChannels.imageView)
             }
             else{
-                holderChannels.textView.text = channelsFromDB[position].title
-                Picasso.with(holderChannels.itemView.context).
-                load( channelsFromDB[position].coverAsset_url).
-                into(holderChannels.imageView)
-            }
-        }
-        else {
-            if (channelsFromApi[position].series.isNotEmpty()) {
-                holderChannels.textView.text = channelsFromApi[position].title + " SERIES "
-                Picasso.with(holderChannels.itemView.context).
-                load( channelsFromApi[position].coverAsset.url).
-                into(holderChannels.imageView)
-            } else {
-                holderChannels.textView.text = channelsFromApi[position].title
                 Picasso.with(holderChannels.itemView.context).
                 load( channelsFromApi[position].coverAsset.url).
                 into(holderChannels.imageView)
             }
+
+            if (channelsFromApi[position].series.isEmpty()){
+                holderChannels.recycler_in_recycler.adapter = CoursesAdapter(
+                    latestCourseMediaFromApi = channelsFromApi[position].latestMedia.subList(0,6),
+                    context = context
+                )
+            }
+            else{
+                val latestMedia = channelsFromApi[position].latestMedia
+                if (latestMedia.size > 6){
+                    holderChannels.recycler_in_recycler.adapter = SeriesAdapter(
+                        latestSeriesMediaFromApi = channelsFromApi[position].latestMedia.subList(0,6),
+                        context = context
+                    )
+                }
+                else{
+                    holderChannels.recycler_in_recycler.adapter = SeriesAdapter(
+                        latestSeriesMediaFromApi = channelsFromApi[position].latestMedia,
+                        context = context
+                    )
+                }
+            }
+
         }
     }
 }
 
 class ChannelsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    val textView = view.channels_item_textview
-    val imageView = view.channel_imageView
-    val layout = view.channels_constraint_layout
+    val textView_channel_header = view.channel_header_textView
+    val textView_channel_subheader = view.channel_subheader_textView
+    val imageView = view.channel_header_imageView
+    val recycler_in_recycler = view.latestMedia_recyclerview
 }

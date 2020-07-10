@@ -114,14 +114,14 @@ fun saveChannel(
     return row_id
 }
 
-fun saveLatestMedia(context: Context,channel_foreign:String,coverAsset: String,series_id:String,
-                    title: String): Long{
+fun saveLatestMedia(context: Context,channel_foreign:String,coverAsset: String,title:String,
+                    type: String): Long{
     val row_id = context.database.use {
         insert("latest_media",
             "channel_foreign" to channel_foreign,
             "coverAsset" to coverAsset,
-            "series_id" to series_id,
-            "title" to title)
+            "title" to title,
+            "type" to type)
     }
     return row_id
 }
@@ -147,6 +147,10 @@ fun returnNewEpisode(context: Context) =
 fun returnChannel(context: Context) =
     context.database.readableDatabase.select("channel")
 
+fun returnMedia(context: Context, channel_name: String) =
+    context.database.readableDatabase.select("latest_media").
+    whereArgs("channel_foreign = \""+ channel_name+"\"")
+
 
 
 fun clearCategory(context: Context) =
@@ -162,5 +166,10 @@ fun clearNewEpisode(context: Context) =
 fun clearChannel(context: Context) =
     context.database.use {
         delete("channel")
+    }
+
+fun clearLatestMedia(context: Context) =
+    context.database.use {
+        delete("latest_media")
     }
 
