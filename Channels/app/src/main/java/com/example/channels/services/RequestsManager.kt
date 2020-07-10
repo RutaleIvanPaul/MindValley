@@ -16,6 +16,7 @@ import com.example.channels.adapters.CoursesAdapter
 import com.example.channels.adapters.NewEpisodesAdapter
 import com.example.channels.database.*
 import com.example.channels.models.*
+import com.example.channels.views.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

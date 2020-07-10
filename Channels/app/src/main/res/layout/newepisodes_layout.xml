@@ -2,12 +2,24 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="170dp"
     android:layout_height="400dp"
     android:layout_marginTop="10dp"
     android:layout_marginStart="20dp"
     android:layout_marginEnd="0dp"
     >
+
+    <ProgressBar
+        android:id="@+id/episode_section_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/fontColorSecondary"
+        app:layout_constraintBottom_toBottomOf="@+id/newepisode_imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.598"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.siyamed.shapeimageview.RoundedImageView
         android:id="@+id/newepisode_imageView"
@@ -36,7 +48,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newepisode_imageView"
-        app:layout_constraintVertical_bias="0.073" />
+        app:layout_constraintVertical_bias="0.9" />
 
     <TextView
         android:id="@+id/new_episode_textView_channel"

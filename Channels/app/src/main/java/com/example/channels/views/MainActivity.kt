@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.BOLD_ITALIC
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -52,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         )
 
     }
-
 
     override fun onPause() {
         super.onPause()

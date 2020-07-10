@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import com.example.channels.database.saveCategory
 import com.example.channels.database.saveChannel
 import com.example.channels.database.saveNewEpisode
@@ -31,12 +32,6 @@ class LoadUITest {
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        assertEquals("com.example.channels", appContext.packageName)
-    }
-
-    @Test
     fun loadElements(){
         onView(withId(R.id.home)).check(matches(isDisplayed()))
         Thread.sleep(5000)
@@ -45,7 +40,6 @@ class LoadUITest {
             .check(matches(isDisplayed()))
         val recycler_view_newepisodes: RecyclerView = mainActivity.getActivity().findViewById(R.id.recyclerviewNewEpisodes)
         val recycler_view_channels: RecyclerView = mainActivity.getActivity().findViewById(R.id.recyclerviewChannels)
-        val recycler_view_categories: RecyclerView = mainActivity.getActivity().findViewById(R.id.recyclerviewCategories)
 
         assertEquals(6,recycler_view_newepisodes.adapter?.itemCount)
         assertEquals(6,recycler_view_channels.adapter?.itemCount)
@@ -74,13 +68,10 @@ class LoadUITest {
             "New Title",
             "New Series or not"
         )
-
-        solo.getCurrentActivity().getSystemService(appContext.WIFI_SERVICE).isWifiEnabled = false
-
-
         val testApp = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         testApp.openQuickSettings()
-        checkNotNull(testApp.findObject(By.descEndsWith("mode"))).click()
+        checkNotNull(testApp.findObject(UiSelector().textContains("mode"))).click()
+        testApp.pressBack()
         testApp.pressBack()
 //        testApp.waitForIdle()
 
