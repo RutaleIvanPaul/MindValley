@@ -9,6 +9,7 @@ import com.example.channels.R
 import com.example.channels.models.DatabaseNewEpisode
 import com.example.channels.models.NewEpisodeModel
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.newepisodes_layout.view.*
 
 class NewEpisodesAdapter(

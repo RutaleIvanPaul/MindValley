@@ -9,6 +9,16 @@
     android:layout_marginTop="10dp"
     >
 
+    <ProgressBar
+        android:id="@+id/episode_section_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/fontColorSecondary"
+        app:layout_constraintBottom_toBottomOf="@+id/series_imageview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/series_imageview" />
+
     <com.github.siyamed.shapeimageview.RoundedImageView
         android:id="@+id/series_imageview"
         android:layout_width="match_parent"
